@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final ip = Platform.isIOS ? simulatorIp : emulatorIp;
 
     return DefaultLayout(
+      title: 'LoginScreen',
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: SafeArea(
