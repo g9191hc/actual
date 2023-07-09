@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:actual/common/const/colors.dart';
 import 'package:actual/common/layout/default_layout.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/component/custom_text_form_field.dart';
@@ -9,56 +13,89 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dio = Dio();
+
+    final emulatorIp = '10.0.2.2:3000';
+    final simulatorIp = '127.0.0.1:3000';
+
+    final ip = Platform.isIOS ? simulatorIp : emulatorIp;
+
     return DefaultLayout(
       child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: SafeArea(
-      child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _Title(),
-          const SizedBox(height: 16.0),
-          _SubTitle(),
-          Image.asset(
-            'asset/img/misc/logo.png',
-            width: MediaQuery
-                .of(context)
-                .size
-                .width / 3 * 2,
-          ),
-          CustomTextFormField(
-            hintText: '이메일을 입력 해 주세요',
-            onChanged: (value) {},
-          ),
-          const SizedBox(height: 16.0),
-          CustomTextFormField(
-            hintText: '비밀번호를을 입력 해 주세요',
-            onChanged: (value) {},
-            obscureText: true,
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {},
-            child: Text('로그인'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: PRIMARY_COLOR,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _Title(),
+                const SizedBox(height: 16.0),
+                _SubTitle(),
+                Image.asset(
+                  'asset/img/misc/logo.png',
+                  width: MediaQuery.of(context).size.width / 3 * 2,
+                ),
+                CustomTextFormField(
+                  hintText: '이메일을 입력 해 주세요',
+                  onChanged: (value) {},
+                ),
+                const SizedBox(height: 16.0),
+                CustomTextFormField(
+                  hintText: '비밀번호를을 입력 해 주세요',
+                  onChanged: (value) {},
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () async {
+                    //ID:Password
+                    final rawString = 'test@codefactory.ai:testtest';
+
+                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+
+                    final token = stringToBase64.encode(rawString);
+
+                    final resp = await dio.post(
+                      'http://$ip/auth/login',
+                      options: Options(
+                        headers: {
+                          'authorization': 'Basic $token',
+                        },
+                      ),
+                    );
+                    print(resp);
+                  },
+                  child: Text('로그인'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: PRIMARY_COLOR,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+
+                    final token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTY4ODkwMjA1NiwiZXhwIjoxNjg4OTg4NDU2fQ.nP9119xwDFaIsKA6toJzjG9pksYzQCfzm8NAiAowbWk';
+
+                    final resp = await dio.post(
+                      'http://$ip/auth/token',
+                      options: Options(
+                        headers: {
+                          'authorization': 'Bearer $token',
+                        },
+                      ),
+                    );
+                    print(resp);
+                  },
+                  child: Text('회원가입'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black,
+                  ),
+                ),
+              ],
             ),
           ),
-          TextButton(
-            onPressed: () {},
-            child: Text('회원가입'),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.black,
-            ),
-          ),
-        ],
+        ),
       ),
-    ),)
-    ,
-    )
-    ,
     );
   }
 }
