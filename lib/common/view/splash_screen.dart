@@ -23,19 +23,25 @@ class _SplashScreenState extends State<SplashScreen> {
   checkToken() async {
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-
-    //토큰이 유효한지 검증이 필요한데, 추후에 구현예정
-    if (refreshToken == null || accessToken == null) {
-      Navigator.of(context).pushAndRemoveUntil(
+    /** 회사에서 할 때는 토큰체크부분 주석처리
+     * //토큰이 유효한지 검증이 필요한데, 추후에 구현예정
+        if (refreshToken == null || accessToken == null) {
+        Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => LoginScreen()),
         (route) => false,
-      );
-    }else{
-      Navigator.of(context).pushAndRemoveUntil(
+        );
+        }else{
+        Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => RootTab()),
-            (route) => false,
-      );
-    }
+        (route) => false,
+        );
+        }
+     */
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => RootTab()),
+          (route) => false,
+    );
   }
 
   deleteToken() async {

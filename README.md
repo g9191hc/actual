@@ -1,4 +1,4 @@
-# actual
+`# actual
 
 A new Flutter project.
 
@@ -14,3 +14,19 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+코드팩토리 서버 다운
+https://github.com/codefactory-co/flutter-lv2-server
+
+SDK의 프로젝트 위치의 터미널에서 다음 순서대로 입력하여 서버 실행
+
+node --version
+npm i
+npm run start:dev
+
+서버 접속
+http://127.0.0.1:3000/
+
+서버 API접속
+http://127.0.0.1:3000/api

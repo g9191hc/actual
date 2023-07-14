@@ -11,6 +11,7 @@ class RootTab extends StatefulWidget {
 
 class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   int index = 0;
+  // late : 나중에 입력될 값이지만, 사용될 때는 null이 아닐것이라는 것을 알려줌
   late TabController controller;
 
   @override
