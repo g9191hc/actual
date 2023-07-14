@@ -9,23 +9,53 @@ class RootTab extends StatefulWidget {
   State<RootTab> createState() => _RootTabState();
 }
 
-class _RootTabState extends State<RootTab> {
+class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   int index = 0;
+  late TabController controller;
+
+  @override
+  void initState() {
+    controller = TabController(length: 4, vsync: this);
+    controller.addListener(tabListner);
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+    controller.removeListener(tabListner);
+    controller.dispose();
+    super.dispose();
+  }
+
+
+  void tabListner(){
+    setState(() {
+      index = controller.index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: '코팩 딜리버리',
+      child: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: controller,
+        children: [
+          Center(child: Text('홈')),
+          Center(child: Text('음식')),
+          Center(child: Text('주문')),
+          Center(child: Text('프로필')),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: PRIMARY_COLOR,
         unselectedItemColor: BODY_TEXT_COLOR,
         selectedFontSize: 10.0,
         unselectedFontSize: 10.0,
-        type: BottomNavigationBarType.,
-        onTap: (int index){
-          setState(() {
-            this.index = index;
-          });
+        type: BottomNavigationBarType.fixed,
+        onTap: (int index) {
+          controller.animateTo(index);
         },
         currentIndex: index,
         items: [
@@ -54,9 +84,6 @@ class _RootTabState extends State<RootTab> {
             label: '프로필',
           ),
         ],
-      ),
-      child: Center(
-        child: Text('Root Tab'),
       ),
     );
   }
