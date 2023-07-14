@@ -28,10 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final dio = Dio();
     final storage = FlutterSecureStorage();
 
-    final emulatorIp = '10.0.2.2:3000';
-    final simulatorIp = '127.0.0.1:3000';
 
-    final ip = Platform.isIOS ? simulatorIp : emulatorIp;
 
     return DefaultLayout(
       title: 'LoginScreen',
@@ -103,18 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    final token =
-                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTY4ODkwMjA1NiwiZXhwIjoxNjg4OTg4NDU2fQ.nP9119xwDFaIsKA6toJzjG9pksYzQCfzm8NAiAowbWk';
 
-                    final resp = await dio.post(
-                      'http://$ip/auth/token',
-                      options: Options(
-                        headers: {
-                          'authorization': 'Bearer $token',
-                        },
-                      ),
-                    );
-                    print(resp);
                   },
                   child: Text('회원가입'),
                   style: TextButton.styleFrom(
