@@ -36,6 +36,9 @@ class _SplashScreenState extends State<SplashScreen> {
           },
         ),
       );
+
+      storage.write(key: ACCESS_TOKEN_KEY, value: resp.data['accessToken']);
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => RootTab()),
             (route) => false,
@@ -48,10 +51,10 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
 
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => RootTab()),
-      (route) => false,
-    );
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(builder: (_) => RootTab()),
+    //   (route) => false,
+    // );
   }
 
   deleteToken() async {
