@@ -9,7 +9,18 @@ class RestaurantDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      title: '불타는 떡볶이',
+        title: '불타는 떡볶이',
+        child: CustomScrollView(
+          slivers: [
+            _renderTop(),
+            _renderLabel(),
+            _renderProducts(),
+          ],
+        ));
+  }
+
+  _renderTop() {
+    return SliverToBoxAdapter(
       child: Column(
         children: [
           RestaurantCard(
@@ -23,11 +34,37 @@ class RestaurantDetailScreen extends StatelessWidget {
             isDetail: true,
             detail: '맛있는 떡볶이',
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ProductCard(),
-          ),
         ],
+      ),
+    );
+  }
+
+  _renderProducts() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: ProductCard(),
+            );
+          },
+          childCount: 10,
+        ),
+      ),
+    );
+  }
+
+  _renderLabel(){
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      sliver: SliverToBoxAdapter(
+        child: Text('메뉴',
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.w500,
+        ),),
       ),
     );
   }
