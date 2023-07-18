@@ -21,29 +21,29 @@ class RestaurantDetailModel extends RestaurantModel {
     required this.products,
   });
 
-  factory RestaurantDetailModel.fromJson({required Map<String, dynamic> json}){
+  factory RestaurantDetailModel.fromJson({required Map<String, dynamic> json}) {
     return RestaurantDetailModel(
       id: json['id'],
       name: json['name'],
       thumbUrl: 'http://$ip${json['thumbUrl']}',
       tags: List<String>.from(json['tags']),
-      priceRange: RestaurantPriceRange.values.firstWhere((e) => e.name == json['priceRange']) ,
+      priceRange: RestaurantPriceRange.values
+          .firstWhere((e) => e.name == json['priceRange']),
       ratings: json['ratings'],
       ratingsCount: json['ratingsCount'],
       deliveryTime: json['deliveryTime'],
       deliveryFee: json['deliveryFee'],
       detail: json['detail'],
-      products: json['products'].map<RestaurantProductModel>((x) =>
-          RestaurantProductModel(
-            id: x['id'],
-            name: x['name'],
-            imgUrl: x['imgUrl'],
-            detail: x['detail'],
-            price: x['price'],),
-      ).toList(),);
+      products: json['products']
+          .map<RestaurantProductModel>(
+            (x) => RestaurantProductModel.fromJson(
+              json: x,
+            ),
+          )
+          .toList(),
+    );
   }
 }
-
 
 class RestaurantProductModel {
   final String id;
@@ -59,4 +59,15 @@ class RestaurantProductModel {
     required this.detail,
     required this.price,
   });
+
+  factory RestaurantProductModel.fromJson(
+      {required Map<String, dynamic> json}) {
+    return RestaurantProductModel(
+      id: json['id'],
+      name: json['name'],
+      imgUrl: json['imgUrl'],
+      detail: json['detail'],
+      price: json['price'],
+    );
+  }
 }
