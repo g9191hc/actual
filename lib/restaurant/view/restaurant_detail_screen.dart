@@ -47,7 +47,7 @@ class RestaurantDetailScreen extends StatelessWidget {
             );
           }
 
-          final item = RestaurantDetailModel.fromJson(json: snapshot.data!);
+          final item = utils.fromJson(snapshot.data!);
 
           return CustomScrollView(
             slivers: [
@@ -62,7 +62,7 @@ class RestaurantDetailScreen extends StatelessWidget {
   }
 
   _renderTop({
-    required RestaurantDetailModel model,
+    required utils model,
   }) {
     return SliverToBoxAdapter(
       child: Column(

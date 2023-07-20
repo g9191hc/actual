@@ -1,6 +1,8 @@
 import 'package:actual/common/const/data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../common/utils/data_utils.dart';
+
 part 'restaurant_model.g.dart';
 
 enum RestaurantPriceRange {
@@ -13,7 +15,7 @@ enum RestaurantPriceRange {
 class RestaurantModel {
   final String id;
   final String name;
-  @JsonKey(fromJson: pathToUrl)
+  @JsonKey(fromJson: DataUtils.pathToUrl)
   final String thumbUrl;
   final List<String> tags;
   final RestaurantPriceRange priceRange;
@@ -57,7 +59,5 @@ class RestaurantModel {
 
 //
 
-  static pathToUrl(String value) {
-    return 'http://$ip$value';
-  }
+
 }
