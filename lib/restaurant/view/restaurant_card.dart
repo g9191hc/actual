@@ -64,7 +64,7 @@ class RestaurantCard extends StatelessWidget {
       deliveryFee: model.deliveryTime,
       ratings: model.ratings,
       isDetail: isDetail,
-      detail: model is utils ? model.detail : null,
+      detail: model is RestaurantDetailModel ? model.detail : null,
     );
   }
 

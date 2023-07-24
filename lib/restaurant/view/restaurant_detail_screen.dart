@@ -1,5 +1,6 @@
 import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/product/component/product_card.dart';
+import 'package:actual/restaurant/repository/restaurant_repository.dart';
 import 'package:actual/restaurant/view/restaurant_card.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -15,31 +16,29 @@ class RestaurantDetailScreen extends StatelessWidget {
     required this.id,
   });
 
-  Future<Map<String, dynamic>> getRestaurantDetail() async {
+  Future<RestaurantDetailModel> getRestaurantDetail() async {
     final dio = Dio();
 
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    final repository =
+        RestaurantRepository(dio, baseUrl: 'http://$ip/restaurant');
 
-    final resp = await dio.get(
-      'http://$ip/restaurant/$id',
-      options: Options(
-        headers: {
-          'authorization': 'Bearer $accessToken',
-        },
-      ),
-    );
-
-    return resp.data;
+    return repository.getRestaurantDetail(id: id);
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: '불타는 떡볶이',
-      child: FutureBuilder<Map<String, dynamic>>(
+      child: FutureBuilder<RestaurantDetailModel>(
         future: getRestaurantDetail(),
-        builder: (_, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        builder: (_, AsyncSnapshot<RestaurantDetailModel> snapshot) {
           print(snapshot.data);
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
 
           if (!snapshot.hasData) {
             return Center(
@@ -47,13 +46,11 @@ class RestaurantDetailScreen extends StatelessWidget {
             );
           }
 
-          final item = utils.fromJson(snapshot.data!);
-
           return CustomScrollView(
             slivers: [
-              _renderTop(model: item),
+              _renderTop(model: snapshot.data!),
               _renderLabel(),
-              _renderProducts(products: item.products),
+              _renderProducts(products: snapshot.data!.products),
             ],
           );
         },
@@ -62,7 +59,7 @@ class RestaurantDetailScreen extends StatelessWidget {
   }
 
   _renderTop({
-    required utils model,
+    required RestaurantDetailModel model,
   }) {
     return SliverToBoxAdapter(
       child: Column(

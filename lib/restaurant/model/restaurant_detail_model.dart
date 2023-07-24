@@ -8,11 +8,11 @@ import '../../common/utils/data_utils.dart';
 part 'restaurant_detail_model.g.dart';
 
 @JsonSerializable()
-class utils extends RestaurantModel {
+class RestaurantDetailModel extends RestaurantModel {
   final String detail;
   final List<RestaurantProductModel> products;
 
-  utils({
+  RestaurantDetailModel({
     required super.id,
     required super.name,
     @JsonKey(fromJson: DataUtils.pathToUrl)
@@ -27,7 +27,7 @@ class utils extends RestaurantModel {
     required this.products,
   });
 
-  factory utils.fromJson(Map<String, dynamic> json){
+  factory RestaurantDetailModel.fromJson(Map<String, dynamic> json){
       return _$RestaurantDetailModelFromJson(json);
   }
 }
