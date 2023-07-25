@@ -1,5 +1,6 @@
 import 'package:actual/common/dio/dio.dart';
 import 'package:actual/restaurant/model/restaurant_model.dart';
+import 'package:actual/restaurant/repository/restaurant_repository.dart';
 import 'package:actual/restaurant/view/restaurant_card.dart';
 import 'package:actual/restaurant/view/restaurant_detail_screen.dart';
 import 'package:dio/dio.dart';
@@ -10,24 +11,16 @@ import '../../common/const/data.dart';
 class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({super.key});
 
-  Future<List> paginateRestaurant() async {
+  Future<List<RestaurantModel>> paginateRestaurant() async {
     final dio = Dio();
 
     dio.interceptors.add(CustomInterceptor());
 
-    //secureStorage에 저장된 accessToken 가져오기
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    final resp = await RestaurantRepository(
+      dio, baseUrl: 'http://$ip/restaurant',
+    ).paginate();
 
-    final resp = await dio.get(
-      'http://$ip/restaurant',
-      options: Options(
-        headers: {
-          "authorization": 'Bearer $accessToken',
-        },
-      ),
-    );
-
-    return resp.data['data'];
+    return resp.data;
   }
 
   @override
@@ -36,9 +29,9 @@ class RestaurantScreen extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: FutureBuilder<List>(
+          child: FutureBuilder<List<RestaurantModel>>(
             future: paginateRestaurant(),
-            builder: (context, AsyncSnapshot<List> snapshot) {
+            builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
               if (!snapshot.hasData) {
                 return Container();
               }
@@ -46,18 +39,16 @@ class RestaurantScreen extends StatelessWidget {
               return ListView.separated(
                 itemCount: 20,
                 itemBuilder: (_, index) {
-                  final item = snapshot.data![index];
-                  final pItem = RestaurantModel.fromJson(
-                    item,
-                  );
+                  final pItem = snapshot.data![index];
 
                   return GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => RestaurantDetailScreen(
-                            id: pItem.id,
-                          ),
+                          builder: (_) =>
+                              RestaurantDetailScreen(
+                                id: pItem.id,
+                              ),
                         ),
                       );
                     },
