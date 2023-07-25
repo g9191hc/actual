@@ -3,30 +3,32 @@ import 'dart:io';
 
 import 'package:actual/common/const/colors.dart';
 import 'package:actual/common/const/data.dart';
+import 'package:actual/common/dio/dio.dart';
 import 'package:actual/common/layout/default_layout.dart';
+import 'package:actual/common/secure_storage/secure_storage.dart';
 import 'package:actual/common/view/root_tab.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 import '../../common/component/custom_text_form_field.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   String username = '';
   String password = '';
 
   @override
   Widget build(BuildContext context) {
-    final dio = Dio();
-    final storage = FlutterSecureStorage();
+    final dio = ref.watch(dioProvider);
 
 
 
@@ -84,6 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     final refreshToken = resp.data['refreshToken'];
                     final accessToken = resp.data['accessToken'];
 
+                    //필드가 아닌 빌드되는 함수 내부여서 매번 빌드되믜로, watch가 아닌 read로 가져옴
+                    final storage = ref.read(secureStorageProvider);
                     storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
                     storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
 

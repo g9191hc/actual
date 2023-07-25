@@ -40,6 +40,7 @@ dependencies:
   json_annotation: ^4.8.1
   retrofit: '>=4.0.0 <5.0.0'
   logger: any
+  flutter_riverpod: ^2.3.6
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,23 @@
 import 'package:actual/common/const/data.dart';
+import 'package:actual/common/secure_storage/secure_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+final dioProvider = Provider<Dio>((ref) {
+  final dio = Dio();
+  final storage = ref.watch(secureStorageProvider);
+
+  dio.interceptors.add(
+    CustomInterceptor(storage: storage),
+  );
+  return dio;
+});
+
 class CustomInterceptor extends Interceptor {
+  final FlutterSecureStorage storage;
+
+  CustomInterceptor({required this.storage});
   // 요청을 보낼때(보내기직전) : onRequest+Tab(자동완성)
   // RequestOptions에는 요청시의 모든 정보(주소, 경로('/'등), 헤더 등)가 담겨있음
   @override
@@ -62,7 +77,6 @@ class CustomInterceptor extends Interceptor {
 
         //resolve를 통해 정상적인 응답으로 처리
         handler.resolve(response);
-
       } on DioException catch (e) {
         //새 액세스토큰을 받는 과정에서 문제가 발생하면, 더 이상 할수 있는 것이 없으므로 요청실패 처리
         handler.reject(e);
@@ -74,8 +88,8 @@ class CustomInterceptor extends Interceptor {
 // 요청에 대한 응답을 받았을 때 : onResponse+Tab(자동완성)
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-
-    print('[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
+    print(
+        '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
 
     super.onResponse(response, handler);
   }
