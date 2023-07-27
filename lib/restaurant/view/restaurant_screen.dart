@@ -31,8 +31,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
   }
 
   void scrollListener() {
-    //현재위치가 가자아래보다 약간 위 까지 왔을 때
-    print('run');
+    //현재위치가 가자아래보다 약간 위 까지 왔을 때 추가요청
     if (controller.offset > controller.position.maxScrollExtent - 300)
       ref.read(restaurantProvider.notifier).paginate(fetchMore: true);
   }
@@ -55,15 +54,29 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
       );
     }
 
-    //데이터가 있는 상태
+    //데이터가 있는 상태의 클래스로 파싱
     final cp = data as CursorPagination;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: ListView.separated(
         controller: controller,
-        itemCount: cp.data.length,
+        itemCount: cp.data.length + 1,
         itemBuilder: (_, index) {
+          if (index == cp.data.length) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              child: Center(
+                child: cp is CursorPaginationFetchingMore
+                    ? CircularProgressIndicator()
+                    : Text('끝입니다'),
+              ),
+            );
+          }
+
           final pItem = cp.data[index];
 
           return GestureDetector(
