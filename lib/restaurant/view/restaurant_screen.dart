@@ -6,24 +6,62 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/model/cursor_pagination_model.dart';
 
-class RestaurantScreen extends ConsumerWidget {
+class RestaurantScreen extends ConsumerStatefulWidget {
   const RestaurantScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RestaurantScreen> createState() => _RestaurantScreenState();
+}
+
+class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
+  final controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller.addListener(scrollListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.removeListener(scrollListener);
+    controller.dispose();
+  }
+
+  void scrollListener() {
+    //현재위치가 가자아래보다 약간 위 까지 왔을 때
+    print('run');
+    if (controller.offset > controller.position.maxScrollExtent - 300)
+      ref.read(restaurantProvider.notifier).paginate(fetchMore: true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final data = ref.watch(restaurantProvider);
 
+    //처음 요청
     if (data is CursorPaginationLoading) {
       return Center(
         child: CircularProgressIndicator(),
       );
     }
 
+    //에러
+    if (data is CursorPaginationError) {
+      return Center(
+        child: Text(data.errMessage),
+      );
+    }
+
+    //데이터가 있는 상태
     final cp = data as CursorPagination;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: ListView.separated(
+        controller: controller,
         itemCount: cp.data.length,
         itemBuilder: (_, index) {
           final pItem = cp.data[index];
