@@ -1,4 +1,5 @@
 import 'package:actual/common/model/cursor_pagination_model.dart';
+import 'package:actual/common/model/pagination_params.dart';
 import 'package:actual/restaurant/model/restaurant_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -41,10 +42,10 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     // 4) CursorPaginationRefetching - 첫페이지부터 다시 요청하여 로딩중 상태(현재 캐시 있음)
     // 5) CursorPaginationFetchingMore - 추가데이터를 요청하여 로딩중 상태(현재 캐시 있음)
 
-    // 1. 데이터 요청을 하지 않는 경우
+    // 1. 데이터 요청을 거부해야 하는 경우
     // 1-1. 현재 데이터가 있고(= 이미 요청한 적이 있고) 강제로 처음페이지를 받아야 하는 경우가 아닌 상태에서(forceRefetch = false)
     if (state is CursorPagination && !forceRefetch) {
-      final pState = state as CursorPagination; //CursorPagination상속객체를 제외시킴
+      final pState = state as CursorPagination; //현재 데이터가 있으면서 데이터요청을 하지 않는 상태
 
       // hasMore의 값이 false인 경우
       // (= 서버에서 더이상 가져올 데이터가 없는 경우)
@@ -57,8 +58,40 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     final isLoading = state is CursorPaginationLoading;
     final isRefetching = state is CursorPaginationRefetching;
     final isFetchingMore = state is CursorPaginationFetchingMore;
+
     if (fetchMore && (isLoading || isRefetching || isFetchingMore)) {
       return;
+    }
+
+    // 2. 로직 시작
+    // 2-1. PaginationParmas생성
+    PaginationParams paginationParams = PaginationParams(
+      count: fetchCount,
+    );
+
+    // 2-2. fetchMore(데이터 추가요청) = 현재 데이터가 있으며, 요청시 after(마지막요소ID)가 포함되어야 함
+    // 2-2-1. 현재상태를 변경하고, 보낼 파라미터모델을 업데이트
+    if (fetchMore) {
+      final pState = state as CursorPagination; //현재 데이터가 있으면서 데이터요청을 하지 않는 상태
+
+      state = CursorPaginationFetchingMore(
+        meta: pState.meta,
+        data: pState.data,
+      );
+
+      paginationParams = paginationParams.copyWith(after: pState.data.last.id);
+    }
+    // 2-2-2. fetchMore 요청 및 기다림
+    final resp = await repository.paginate(paginationParams: paginationParams);
+
+    if (state is CursorPaginationFetchingMore) {
+      final pState = state as CursorPaginationFetchingMore;
+
+      //응답받은 응답(resp)에서 data부만, 기존data에 응답data를 합치도록 함
+      state = resp.copyWith(data: [
+        ...pState.data,
+        ...resp.data,
+      ]);
     }
   }
 }
