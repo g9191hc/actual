@@ -1,15 +1,9 @@
-import 'package:actual/common/dio/dio.dart';
 import 'package:actual/common/layout/default_layout.dart';
-import 'package:actual/common/secure_storage/secure_storage.dart';
 import 'package:actual/product/component/product_card.dart';
 import 'package:actual/restaurant/repository/restaurant_repository.dart';
 import 'package:actual/restaurant/view/restaurant_card.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import '../../common/const/data.dart';
 import '../model/restaurant_detail_model.dart';
 
 class RestaurantDetailScreen extends ConsumerWidget {
