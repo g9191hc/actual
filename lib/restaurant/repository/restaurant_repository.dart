@@ -1,6 +1,7 @@
 import 'package:actual/common/const/data.dart';
 import 'package:actual/common/dio/dio.dart';
 import 'package:actual/common/model/cursor_pagination_model.dart';
+import 'package:actual/common/model/pagination_params.dart';
 import 'package:actual/restaurant/model/restaurant_detail_model.dart';
 import 'package:actual/restaurant/model/restaurant_model.dart';
 import 'package:dio/dio.dart' hide Headers;
@@ -25,8 +26,12 @@ abstract class RestaurantRepository {
       _RestaurantRepository;
 
   @GET('/')
-  @Headers({AUTHORIZATION_KEY: 'true'})
-  Future<CursorPagination<RestaurantModel>> paginate();
+  @Headers({
+    AUTHORIZATION_KEY: 'true',
+  })
+  Future<CursorPagination<RestaurantModel>> paginate({
+    @Queries() PaginationParams? paginationParams = const PaginationParams(),
+});
 
   //{}로 변수임을 나타냄
   @GET('/{id}')
