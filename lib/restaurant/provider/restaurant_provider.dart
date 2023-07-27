@@ -34,23 +34,31 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     //true : CursorPaginationLoading(초기화)
     bool forceRefetch = false,
   }) async {
-    //5가지 경우
+    //5가지 상태
     // 1) CursorPagination - 정상데이터가 있는상태
-    // 2) CursorPaginationLoading - 데이터 로딩중 상태(현재 캐시 없음)
+    // 2) CursorPaginationLoading - 최초데이터 요청하여 로딩중 상태(현재 캐시 없음)
     // 3) CursorPaginationError - 에러가 있는 상태
-    // 4) CursorPaginationRefetching - 첫페이지부터 다시 가져올 때(현재 캐시 있음)
-    // 5) CursorPaginationFetchingMore - 추가데이터 요청을 받았을 때
+    // 4) CursorPaginationRefetching - 첫페이지부터 다시 요청하여 로딩중 상태(현재 캐시 있음)
+    // 5) CursorPaginationFetchingMore - 추가데이터를 요청하여 로딩중 상태(현재 캐시 있음)
 
-    // 아무런 요청을 하지 않는 경우
-    // 현재 데이터가 있고(= 이미 요청한 적이 있고) 그 중 fetchMore의 값이 false(서버에서 더이상 뒤에 데이터가 없는경우에 false)이면서
-    // 강제로 처음페이지를 받아야 하는 경우(forceRefetch = true)가 아니라면, 아무런 요청을 하지 않음
+    // 1. 데이터 요청을 하지 않는 경우
+    // 1-1. 현재 데이터가 있고(= 이미 요청한 적이 있고) 강제로 처음페이지를 받아야 하는 경우가 아닌 상태에서(forceRefetch = false)
     if (state is CursorPagination && !forceRefetch) {
-      //CursorPagination을 상속받는 클래스가 아닌 정확히 CursorPagination임을 암시
-      final pState = state as CursorPagination;
+      final pState = state as CursorPagination; //CursorPagination상속객체를 제외시킴
 
+      // hasMore의 값이 false인 경우
+      // (= 서버에서 더이상 가져올 데이터가 없는 경우)
       if (!pState.meta.hasMore) {
         return;
       }
+    }
+    //1-2. 세가지 로딩상태 중 하나이면서 fetchMore의 값이 true인 경우
+    //    (= 이미 데이터요청을 해서 기다리고 있는데 그 상태에서 추가데이터 요청이 들어오는 경우, 그 추가데이터 요청은 무시
+    final isLoading = state is CursorPaginationLoading;
+    final isRefetching = state is CursorPaginationRefetching;
+    final isFetchingMore = state is CursorPaginationFetchingMore;
+    if (fetchMore && (isLoading || isRefetching || isFetchingMore)) {
+      return;
     }
   }
 }
