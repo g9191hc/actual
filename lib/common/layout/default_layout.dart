@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class DefaultLayout extends StatelessWidget {
   final Color? backgroundColor;
   final Widget child;
-  final String title;
+  final String? title;
   final Widget? bottomNavigationBar;
 
   const DefaultLayout({
     super.key,
-    required this.title,
+    this.title,
     required this.child,
     this.backgroundColor,
     this.bottomNavigationBar,
@@ -33,7 +33,7 @@ class DefaultLayout extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          title,
+          title!,
           style: TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.w500,

@@ -5,6 +5,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../repository/restaurant_repository.dart';
 
+
+final restaurantDetailProvider =
+    Provider.family<RestaurantModel?, String>((ref, id) {
+  final state = ref.watch(restaurantProvider);
+
+  if (state is! CursorPagination<RestaurantModel>) {
+    return null;
+  }
+
+  //state is CursorPagination
+  return state.data.firstWhere((element) => element.id == id);
+
+});
+
 final restaurantProvider =
     StateNotifierProvider<RestaurantStateNotifier, CursorPaginationBase>(
   (ref) => RestaurantStateNotifier(
@@ -42,7 +56,7 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     // 4) CursorPaginationRefetching - 첫페이지부터 다시 요청하여 로딩중 상태(현재 캐시 있음)
     // 5) CursorPaginationFetchingMore - 추가데이터를 요청하여 로딩중 상태(현재 캐시 있음)
 
-    try{
+    try {
       // 1. 데이터 요청을 거부해야 하는 경우
       // 1-1. 현재 데이터가 있고(= 이미 요청한 적이 있고) 강제로 처음페이지를 받아야 하는 경우가 아닌 상태에서(forceRefetch = false)
       if (state is CursorPagination && !forceRefetch) {
@@ -101,7 +115,8 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
       }
 
       // 요청 및 기다림(paginationParams에 after가 있으면 추가요청, 없으면 처음부터 가져옴)
-      final resp = await repository.paginate(paginationParams: paginationParams);
+      final resp =
+          await repository.paginate(paginationParams: paginationParams);
 
       // 추가요청이었으면, 응답받은 데이터를 기존데이터와 합침
       if (state is CursorPaginationFetchingMore) {
@@ -113,10 +128,10 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
           ...resp.data,
         ]);
         // 추가요청이 아니었으면, 응답으로 기존데이터를 덮어씌움
-      } else{
+      } else {
         state = resp;
       }
-    }catch(e){
+    } catch (e) {
       state = CursorPaginationError(errMessage: '데이터를 가져오지 못 했습니다.');
     }
   }
