@@ -1,5 +1,6 @@
 import 'package:actual/common/const/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 class RatingCard extends StatelessWidget {
   //계정 아바타이미지
@@ -35,11 +36,16 @@ class RatingCard extends StatelessWidget {
           email: email,
           rating: rating,
         ),
-        const SizedBox(height: 8.0,),
+        const SizedBox(
+          height: 8.0,
+        ),
         _Body(
           content: content,
         ),
-        _Images(),
+        if (images.isNotEmpty)
+          _Images(
+            images: images,
+          ),
       ],
     );
   }
@@ -118,10 +124,31 @@ class _Body extends StatelessWidget {
 }
 
 class _Images extends StatelessWidget {
-  const _Images({super.key});
+  final List<Image> images;
+
+  const _Images({
+    super.key,
+    required this.images,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SizedBox(
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: images
+            .mapIndexed(
+              (index, e) => Padding(
+                padding: EdgeInsets.only(
+                    right: index == images.length - 1 ? 0.0 : 16.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: e,
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
   }
 }
