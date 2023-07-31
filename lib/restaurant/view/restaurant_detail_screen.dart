@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/restaurant_detail_model.dart';
 import '../model/restaurant_model.dart';
 
-class RestaurantDetailScreen extends ConsumerWidget {
+class RestaurantDetailScreen extends ConsumerStatefulWidget {
   final String id;
 
   const RestaurantDetailScreen({
@@ -17,8 +17,20 @@ class RestaurantDetailScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(restaurantDetailProvider(id));
+  ConsumerState<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
+}
+
+class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    ref.read(restaurantProvider.notifier).getDetail(id: widget.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(restaurantDetailProvider(widget.id));
 
     if (state == null) {
       return DefaultLayout(
@@ -33,8 +45,10 @@ class RestaurantDetailScreen extends ConsumerWidget {
       child: CustomScrollView(
         slivers: [
           _renderTop(model: state),
-          // _renderLabel(),
-          // _renderProducts(products: (state as RestaurantDetailModel).products),
+          if(state is RestaurantDetailModel)
+          _renderLabel(),
+          if(state is RestaurantDetailModel)
+          _renderProducts(products: state.products),
         ],
       ),
     );

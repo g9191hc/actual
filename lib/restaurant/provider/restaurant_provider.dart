@@ -5,18 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../repository/restaurant_repository.dart';
 
-
 final restaurantDetailProvider =
     Provider.family<RestaurantModel?, String>((ref, id) {
   final state = ref.watch(restaurantProvider);
 
-  if (state is! CursorPagination<RestaurantModel>) {
+  if (state is! CursorPagination) {
     return null;
   }
 
   //state is CursorPagination
   return state.data.firstWhere((element) => element.id == id);
-
 });
 
 final restaurantProvider =
@@ -38,7 +36,7 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     paginate();
   }
 
-  void paginate({
+  Future<void> paginate({
     //한번에 가져올 요소 갯수
     int fetchCount = 20,
 
@@ -134,5 +132,30 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     } catch (e) {
       state = CursorPaginationError(errMessage: '데이터를 가져오지 못 했습니다.');
     }
+  }
+
+  getDetail({
+    required String id,
+  }) async {
+    //아직 데이터가 없는 상태인 경우(= CursorPagination이 아님) 데이터 가져오기 요청
+    if (state is! CursorPagination) {
+      await paginate();
+    }
+
+    //요청시도 했음에도 아직 데이터가 없는 상태인 경우 null반환
+    if (state is! CursorPagination) return null;
+
+    //본문(여기부터는 무조건 CursorPagination 상태)
+    final pState = state as CursorPagination;
+
+    final resp = await repository.getRestaurantDetail(id: id);
+
+    state = pState.copyWith(
+      data: pState.data
+          .map<RestaurantModel>(
+            (e) => e.id == id ? resp : e,
+          )
+          .toList(),
+    );
   }
 }
