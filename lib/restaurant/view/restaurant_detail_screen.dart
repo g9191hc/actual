@@ -2,10 +2,11 @@ import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/product/component/product_card.dart';
 import 'package:actual/restaurant/provider/restaurant_provider.dart';
 import 'package:actual/restaurant/repository/restaurant_repository.dart';
-import 'package:actual/restaurant/view/restaurant_card.dart';
+import 'package:actual/restaurant/component/restaurant_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletons/skeletons.dart';
+import '../../rating/component/rating_card.dart';
 import '../model/restaurant_detail_model.dart';
 import '../model/restaurant_model.dart';
 
@@ -44,15 +45,26 @@ class _RestaurantDetailScreenState
     }
 
     return DefaultLayout(
-      title: '불타는 떡볶이',
+      title: state.name,
       child: CustomScrollView(
         slivers: [
           _renderTop(model: state),
           if (state is RestaurantDetailModel) _renderLabel(),
           if (state is RestaurantDetailModel)
             _renderProducts(products: state.products),
-          if (state is! RestaurantDetailModel)
-            _renderLoading(),
+          if (state is! RestaurantDetailModel) _renderLoading(),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: RatingCard(
+                avatarImage: AssetImage('asset/img/logo/codefactory_logo.png'),
+                images: [],
+                rating: 4,
+                email: 'jc@codefactory.ai',
+                content: '맛있습니다',
+              ),
+            ),
+          )
         ],
       ),
     );
