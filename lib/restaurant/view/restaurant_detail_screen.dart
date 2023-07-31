@@ -5,6 +5,7 @@ import 'package:actual/restaurant/repository/restaurant_repository.dart';
 import 'package:actual/restaurant/view/restaurant_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletons/skeletons.dart';
 import '../model/restaurant_detail_model.dart';
 import '../model/restaurant_model.dart';
 
@@ -17,10 +18,12 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
+  ConsumerState<RestaurantDetailScreen> createState() =>
+      _RestaurantDetailScreenState();
 }
 
-class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen> {
+class _RestaurantDetailScreenState
+    extends ConsumerState<RestaurantDetailScreen> {
   @override
   void initState() {
     super.initState();
@@ -45,10 +48,11 @@ class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen>
       child: CustomScrollView(
         slivers: [
           _renderTop(model: state),
-          if(state is RestaurantDetailModel)
-          _renderLabel(),
-          if(state is RestaurantDetailModel)
-          _renderProducts(products: state.products),
+          if (state is RestaurantDetailModel) _renderLabel(),
+          if (state is RestaurantDetailModel)
+            _renderProducts(products: state.products),
+          if (state is! RestaurantDetailModel)
+            _renderLoading(),
         ],
       ),
     );
@@ -99,6 +103,30 @@ class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen>
           style: TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  _renderLoading() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.0,
+      ),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate(
+          List.generate(
+            3,
+            (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 32.0),
+              child: SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 5,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ),
           ),
         ),
       ),
