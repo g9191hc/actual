@@ -1,7 +1,4 @@
-import 'package:actual/common/component/custom_text_form_field.dart';
 import 'package:actual/common/view/splash_screen.dart';
-import 'package:actual/custum_painter.dart';
-import 'package:actual/user/view/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,8 +16,7 @@ class _App extends StatelessWidget {
         theme: ThemeData(fontFamily: 'NotoSans'),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
-
-        //CustomPaintScreen(),
+        // CustomPaintScreen(),
       ),
     );
   }
