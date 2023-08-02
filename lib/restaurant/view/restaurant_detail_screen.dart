@@ -1,6 +1,7 @@
 import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/product/component/product_card.dart';
 import 'package:actual/restaurant/provider/restaurant_provider.dart';
+import 'package:actual/restaurant/provider/restaurant_rating_provider.dart';
 import 'package:actual/restaurant/repository/restaurant_repository.dart';
 import 'package:actual/restaurant/component/restaurant_card.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,8 @@ class _RestaurantDetailScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(restaurantDetailProvider(widget.id));
+    final ratingsState = ref.watch(restaurantRatingProvider(widget.id));
+    print (ratingsState);
 
     if (state == null) {
       return DefaultLayout(

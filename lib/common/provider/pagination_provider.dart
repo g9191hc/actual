@@ -12,7 +12,9 @@ class PaginationProvider<T extends IModelWithId,
 
   PaginationProvider({
     required this.repository,
-  }) : super(CursorPaginationLoading());
+  }) : super(CursorPaginationLoading()) {
+    paginate();
+  }
 
   Future<void> paginate({
     //한번에 가져올 요소 갯수
@@ -83,8 +85,8 @@ class PaginationProvider<T extends IModelWithId,
         // 기존데이터를 보존한 상태로 fetch 요청
         if (state is CursorPagination && !forceRefetch) {
           final pState = state as CursorPagination<T>;
-          state =
-              CursorPaginationRefetching<T>(meta: pState.meta, data: pState.data);
+          state = CursorPaginationRefetching<T>(
+              meta: pState.meta, data: pState.data);
         } else {
           state = CursorPaginationLoading();
         }
@@ -107,7 +109,9 @@ class PaginationProvider<T extends IModelWithId,
       } else {
         state = resp;
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print (e);
+      print(stack);
       state = CursorPaginationError(errMessage: '데이터를 가져오지 못 했습니다.');
     }
   }
