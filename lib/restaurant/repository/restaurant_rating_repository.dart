@@ -10,9 +10,12 @@ import '../../rating/model/rating_model.dart';
 
 part 'restaurant_rating_repository.g.dart';
 
-final restaurantRatingRepositoryProvider = Provider.family<RestaurantRatingRepository, String>((ref, id){
+final restaurantRatingRepositoryProvider =
+    Provider.family<RestaurantRatingRepository, String>((ref, id) {
   final dio = ref.watch(dioProvider);
-  return RestaurantRatingRepository(dio, baseUrl: 'http://$ip/restaurant/$id/rating');
+
+  return RestaurantRatingRepository(dio,
+      baseUrl: 'http://$ip/restaurant/$id/rating');
 });
 
 // http://ip/restaurant/:rid/rating
@@ -28,5 +31,4 @@ abstract class RestaurantRatingRepository {
   Future<CursorPagination<RatingModel>> paginate({
     @Queries() PaginationParams? paginationParams = const PaginationParams(),
   });
-
 }
