@@ -1,10 +1,13 @@
+import 'package:actual/common/model/model_with_id.dart';
 import 'package:actual/common/repository/base_pagination_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/cursor_pagination_model.dart';
 import '../model/pagination_params.dart';
 
-class PaginationProvider<U extends IBasePaginationRepository> extends StateNotifier<CursorPaginationBase> {
+class PaginationProvider<T extends IModelWithId,
+        U extends IBasePaginationRepository<T>>
+    extends StateNotifier<CursorPaginationBase> {
   final U repository;
 
   PaginationProvider({
@@ -63,7 +66,7 @@ class PaginationProvider<U extends IBasePaginationRepository> extends StateNotif
       // 2-2-1. 따라서 현재상태를 fetchingMore객체로 변경하고, 보낼 파라미터모델에 after를 추가함
       if (fetchMore) {
         //state는 CursorPaginationBase이므로, 데이터에 접근이 가능한 CursorPagination 형태로 캐스팅 해줘야 함.
-        final pState = state as CursorPagination;
+        final pState = state as CursorPagination<T>;
 
         state = CursorPaginationFetchingMore(
           meta: pState.meta,
@@ -79,9 +82,9 @@ class PaginationProvider<U extends IBasePaginationRepository> extends StateNotif
         //만약 데이터가 있는 상황인데 새로고침을 요청하는 경우
         // 기존데이터를 보존한 상태로 fetch 요청
         if (state is CursorPagination && !forceRefetch) {
-          final pState = state as CursorPagination;
+          final pState = state as CursorPagination<T>;
           state =
-              CursorPaginationRefetching(meta: pState.meta, data: pState.data);
+              CursorPaginationRefetching<T>(meta: pState.meta, data: pState.data);
         } else {
           state = CursorPaginationLoading();
         }
@@ -92,8 +95,8 @@ class PaginationProvider<U extends IBasePaginationRepository> extends StateNotif
           await repository.paginate(paginationParams: paginationParams);
 
       // 추가요청이었으면, 응답받은 데이터를 기존데이터와 합침
-      if (state is CursorPaginationFetchingMore) {
-        final pState = state as CursorPaginationFetchingMore;
+      if (state is CursorPaginationFetchingMore<T>) {
+        final pState = state as CursorPaginationFetchingMore<T>;
 
         //응답받은 응답(resp)에서 data부만, 기존data에 응답data를 합치도록 함
         state = resp.copyWith(data: [
@@ -107,30 +110,5 @@ class PaginationProvider<U extends IBasePaginationRepository> extends StateNotif
     } catch (e) {
       state = CursorPaginationError(errMessage: '데이터를 가져오지 못 했습니다.');
     }
-  }
-
-  getDetail({
-    required String id,
-  }) async {
-    //아직 데이터가 없는 상태인 경우(= CursorPagination이 아님) 데이터 가져오기 요청
-    if (state is! CursorPagination) {
-      await paginate();
-    }
-
-    //요청시도 했음에도 아직 데이터가 없는 상태인 경우 null반환
-    if (state is! CursorPagination) return null;
-
-    //본문(여기부터는 무조건 CursorPagination 상태)
-    final pState = state as CursorPagination;
-
-    final resp = await repository.getRestaurantDetail(id: id);
-
-    state = pState.copyWith(
-      data: pState.data
-          .map<RestaurantModel>(
-            (e) => e.id == id ? resp : e,
-          )
-          .toList(),
-    );
   }
 }
