@@ -2,6 +2,8 @@ import 'package:actual/common/const/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
+import '../model/rating_model.dart';
+
 class RatingCard extends StatelessWidget {
   //계정 아바타이미지
   final ImageProvider avatarImage;
@@ -26,6 +28,17 @@ class RatingCard extends StatelessWidget {
     required this.email,
     required this.content,
   });
+
+  factory RatingCard.fromModel({
+    required RatingModel model,
+  }){
+    return RatingCard(avatarImage: NetworkImage(model.user.imageUrl),
+      images: model.imgUrls.map((e) => Image.network(e)).toList(),
+      rating: model.rating,
+      email: model.user.id,
+      content: model.content,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,10 +100,11 @@ class _Header extends StatelessWidget {
         ),
         ...List.generate(
           5,
-          (index) => Icon(
-            index < rating ? Icons.star : Icons.star_border_outlined,
-            color: PRIMARY_COLOR,
-          ),
+              (index) =>
+              Icon(
+                index < rating ? Icons.star : Icons.star_border_outlined,
+                color: PRIMARY_COLOR,
+              ),
         ),
       ],
     );
@@ -138,7 +152,8 @@ class _Images extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: images
             .mapIndexed(
-              (index, e) => Padding(
+              (index, e) =>
+              Padding(
                 padding: EdgeInsets.only(
                     right: index == images.length - 1 ? 0.0 : 16.0),
                 child: ClipRRect(
@@ -146,7 +161,7 @@ class _Images extends StatelessWidget {
                   child: e,
                 ),
               ),
-            )
+        )
             .toList(),
       ),
     );
