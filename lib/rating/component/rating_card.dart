@@ -147,23 +147,26 @@ class _Images extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: images
-            .mapIndexed(
-              (index, e) =>
-              Padding(
-                padding: EdgeInsets.only(
-                    right: index == images.length - 1 ? 0.0 : 16.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: e,
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: SizedBox(
+        height: 100,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: images
+              .mapIndexed(
+                (index, e) =>
+                Padding(
+                  padding: EdgeInsets.only(
+                      right: index == images.length - 1 ? 0.0 : 16.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: e,
+                  ),
                 ),
-              ),
-        )
-            .toList(),
+          )
+              .toList(),
+        ),
       ),
     );
   }

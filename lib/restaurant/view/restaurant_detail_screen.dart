@@ -1,4 +1,5 @@
 import 'package:actual/common/layout/default_layout.dart';
+import 'package:actual/common/utils/pagination_utils.dart';
 import 'package:actual/product/component/product_card.dart';
 import 'package:actual/restaurant/provider/restaurant_provider.dart';
 import 'package:actual/restaurant/provider/restaurant_rating_provider.dart';
@@ -28,11 +29,24 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
 
 class _RestaurantDetailScreenState
     extends ConsumerState<RestaurantDetailScreen> {
+  final ScrollController controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
-
+    controller.addListener(listner);
     ref.read(restaurantProvider.notifier).getDetail(id: widget.id);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.removeListener(listner);
+    controller.dispose();
+  }
+
+  void listner(){
+    PaginationUtils.paginate(controller: controller, provider: ref.read(restaurantRatingProvider(widget.id).notifier),);
   }
 
   @override
@@ -51,6 +65,7 @@ class _RestaurantDetailScreenState
     return DefaultLayout(
       title: state.name,
       child: CustomScrollView(
+        controller: controller,
         slivers: [
           _renderTop(model: state),
           if (state is RestaurantDetailModel) _renderLabel(),
@@ -71,8 +86,11 @@ class _RestaurantDetailScreenState
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-          (_, index) => RatingCard.fromModel(
-            model: models[index],
+          (_, index) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: RatingCard.fromModel(
+              model: models[index],
+            ),
           ),
           childCount: models.length,
         ),
