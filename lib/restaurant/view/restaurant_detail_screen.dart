@@ -7,7 +7,9 @@ import 'package:actual/restaurant/component/restaurant_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletons/skeletons.dart';
+import '../../common/model/cursor_pagination_model.dart';
 import '../../rating/component/rating_card.dart';
+import '../../rating/model/rating_model.dart';
 import '../model/restaurant_detail_model.dart';
 import '../model/restaurant_model.dart';
 
@@ -37,7 +39,6 @@ class _RestaurantDetailScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(restaurantDetailProvider(widget.id));
     final ratingsState = ref.watch(restaurantRatingProvider(widget.id));
-    print (ratingsState);
 
     if (state == null) {
       return DefaultLayout(
@@ -56,19 +57,25 @@ class _RestaurantDetailScreenState
           if (state is RestaurantDetailModel)
             _renderProducts(products: state.products),
           if (state is! RestaurantDetailModel) _renderLoading(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: RatingCard(
-                avatarImage: AssetImage('asset/img/logo/codefactory_logo.png'),
-                images: [],
-                rating: 4,
-                email: 'jc@codefactory.ai',
-                content: '맛있습니다',
-              ),
-            ),
-          )
+          if (ratingsState is CursorPagination<RatingModel>)
+            renderRatings(models: ratingsState.data),
         ],
+      ),
+    );
+  }
+
+  SliverPadding renderRatings({
+    required List<RatingModel> models,
+  }) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (_, index) => RatingCard.fromModel(
+            model: models[index],
+          ),
+          childCount: models.length,
+        ),
       ),
     );
   }
@@ -123,8 +130,6 @@ class _RestaurantDetailScreenState
       ),
     );
   }
-
-
 
   _renderLoading() {
     return SliverPadding(

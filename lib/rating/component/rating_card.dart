@@ -148,6 +148,7 @@ class _Images extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      height: 100,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: images
