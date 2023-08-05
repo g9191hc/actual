@@ -9,7 +9,6 @@ part 'product_model.g.dart';
 class ProductModel implements IModelWithId {
   final String id;
   final String name;
-
   @JsonKey(
     fromJson: DataUtils.pathToUrl,
   )

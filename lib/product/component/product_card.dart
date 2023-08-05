@@ -3,6 +3,7 @@ import 'package:actual/restaurant/model/restaurant_detail_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/const/data.dart';
+import '../model/product_model.dart';
 
 class ProductCard extends StatelessWidget {
   final Image image;
@@ -18,10 +19,12 @@ class ProductCard extends StatelessWidget {
     super.key,
   });
 
-  factory ProductCard.fromModel({required RestaurantProductModel model}) {
+  factory ProductCard.fromRestaurantProductModel({
+    required RestaurantProductModel model,
+  }) {
     return ProductCard(
       image: Image.network(
-        'http://$ip${model.imgUrl}',
+        model.imgUrl,
         width: 110,
         height: 110,
         fit: BoxFit.cover,
@@ -32,12 +35,21 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  //Image.asset(
-  //               'asset/img/food/ddeok_bok_gi.jpg',
-  //               width: 110,
-  //               height: 110,
-  //               fit: BoxFit.cover,
-  //             ),
+  factory ProductCard.fromProductModel({
+    required ProductModel model,
+  }) {
+    return ProductCard(
+      image: Image.network(
+        model.imgUrl,
+        width: 110,
+        height: 110,
+        fit: BoxFit.cover,
+      ),
+      name: model.name,
+      detail: model.detail,
+      price: model.price,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
