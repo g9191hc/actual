@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/cursor_pagination_model.dart';
 import '../model/pagination_params.dart';
 
-class PaginationProvider<T extends IModelWithId,
-        U extends IBasePaginationRepository<T>>
+class PaginationProvider<
+        T extends IModelWithId,
+        U extends IBasePaginationRepository<T>
+    >
     extends StateNotifier<CursorPaginationBase> {
   final U repository;
 
