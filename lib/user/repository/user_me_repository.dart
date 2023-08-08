@@ -8,7 +8,7 @@ import '../model/user_model.dart';
 
 part 'user_me_repository.g.dart';
 
-final UserMeRepositoryProvider = Provider<UserMeRepository>((ref) {
+final userMeRepositoryProvider = Provider<UserMeRepository>((ref) {
   final dio = ref.watch(dioProvider);
   return UserMeRepository(dio, baseUrl: 'http://$ip/user/me');
 });

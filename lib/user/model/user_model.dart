@@ -4,8 +4,20 @@ import '../../common/utils/data_utils.dart';
 
 part 'user_model.g.dart';
 
+abstract class UserModelBase {}
+
+class UserModelLoading extends UserModelBase {}
+
+class UserModelError extends UserModelBase {
+  final String errorMessage;
+
+  UserModelError({
+    required this.errorMessage,
+  });
+}
+
 @JsonSerializable()
-class UserModel {
+class UserModel extends UserModelBase {
   final String id;
   final String username;
   @JsonKey(
