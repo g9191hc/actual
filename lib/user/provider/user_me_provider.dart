@@ -23,7 +23,7 @@ class UserMeStateNotifier extends StateNotifier<UserModelBase?> {
     getMe();
   }
 
-  getMe() async {
+  Future<void> getMe() async {
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
