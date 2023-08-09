@@ -1,4 +1,8 @@
+import 'package:actual/common/view/root_tab.dart';
+import 'package:actual/common/view/splash_screen.dart';
+import 'package:actual/restaurant/view/restaurant_detail_screen.dart';
 import 'package:actual/user/provider/user_me_provider.dart';
+import 'package:actual/user/view/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,9 +25,34 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
+  List<GoRoute> get routes => [
+        GoRoute(
+          path: '/',
+          name: RootTab.routeName,
+          builder: (_, __) => RootTab(),
+          routes: [
+            GoRoute(
+              path: 'restaurant/:rid',
+              builder: (_, state) =>
+                  RestaurantDetailScreen(id: state.pathParameters['rid']!),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '/splash',
+          name: SplashScreen.routeName,
+          builder: (_, __) => SplashScreen(),
+        ),
+        GoRoute(
+          path: '/login',
+          name: LoginScreen.routeName,
+          builder: (_, __) => LoginScreen(),
+        ),
+      ];
+
   // SplashScreen
 
-  String? redirectLogic(GoRouterState state) {
+  String? redirectLogic(_, GoRouterState state) {
     final UserModelBase? user = ref.read(userMeProvider);
 
     //현재 화면이 로그인 화면인지 여부 확인
