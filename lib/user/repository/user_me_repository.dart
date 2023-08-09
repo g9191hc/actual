@@ -18,6 +18,8 @@ abstract class UserMeRepository {
   factory UserMeRepository(Dio dio, {String? baseUrl}) = _UserMeRepository;
 
   @GET('/')
-  //@Headers({})
+  @Headers({
+    'accessToken': 'true',
+  })
   Future<UserModel> getMe();
 }

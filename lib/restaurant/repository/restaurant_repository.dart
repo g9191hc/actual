@@ -28,7 +28,7 @@ abstract class RestaurantRepository implements IBasePaginationRepository<Restaur
 
   @GET('/')
   @Headers({
-    AUTHORIZATION_KEY: 'true',
+    'accessToken': 'true',
   })
   Future<CursorPagination<RestaurantModel>> paginate({
     @Queries() PaginationParams? paginationParams = const PaginationParams(),
@@ -36,7 +36,7 @@ abstract class RestaurantRepository implements IBasePaginationRepository<Restaur
 
   //{}로 변수임을 나타냄
   @GET('/{id}')
-  @Headers({AUTHORIZATION_KEY: 'true'})
+  @Headers({'accessToken': 'true'})
   Future<RestaurantDetailModel> getRestaurantDetail({
     @Path() required String id,
   });

@@ -33,7 +33,7 @@ class AuthRepository {
       '$baseUrl/login',
       options: Options(
         headers: {
-          AUTHORIZATION_KEY: 'Basic $serialized',
+          'authorization': 'Basic $serialized',
         },
       ),
     );

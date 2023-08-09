@@ -22,7 +22,7 @@ abstract class ProductRepository<T> implements IBasePaginationRepository<Product
 
   @GET('/')
   @Headers({
-    AUTHORIZATION_KEY: 'true',
+    'accessToken': 'true',
   })
   Future<CursorPagination<ProductModel>> paginate({
     @Queries() PaginationParams? paginationParams = const PaginationParams(),

@@ -25,12 +25,12 @@ class CustomInterceptor extends Interceptor {
       RequestOptions options, RequestInterceptorHandler handler) async {
     print('[REQ] [${options.method}] ${options.uri}');
     //헤더에 인증키 값을 'true'로 보내온 경우 인증키가 필요한 요청으로 보고 실제 토큰으로 대체(하기로 정해놓음)
-    if (options.headers[AUTHORIZATION_KEY] == 'true') {
-      options.headers.remove(AUTHORIZATION_KEY); //true들어 있는 기존키 삭제
+    if (options.headers['accessToken'] == 'true') {
+      options.headers.remove('accessToken'); //true들어 있는 기존키 삭제
       final token =
           await storage.read(key: ACCESS_TOKEN_KEY); //저장되어 있는 액세스토큰 가져옴
       options.headers
-          .addAll({AUTHORIZATION_KEY: 'Bearer $token'}); //새 키값을 넣어 재생성
+          .addAll({'authorization': 'Bearer $token'}); //새 키값을 넣어 재생성
     }
 
     super.onRequest(options, handler);
@@ -57,7 +57,7 @@ class CustomInterceptor extends Interceptor {
         final resp = await dio.post(
           'http://$ip/auth/token',
           options: Options(
-            headers: {AUTHORIZATION_KEY: 'Bearer $refreshToken'},
+            headers: {'authorization': 'Bearer $refreshToken'},
           ),
         );
 
@@ -66,7 +66,7 @@ class CustomInterceptor extends Interceptor {
 
         //기존 요청을 가져와서 새 액세스토큰을 요청에 덮어쓰기(키가 동일하므로 덮어써짐)
         final options = err.requestOptions;
-        options.headers.addAll({AUTHORIZATION_KEY: 'Bearer $accessToken'});
+        options.headers.addAll({'authorization': 'Bearer $accessToken'});
         await storage.write(
           key: ACCESS_TOKEN_KEY,
           value: accessToken,
