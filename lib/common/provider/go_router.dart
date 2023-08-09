@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider(
   (ref) {
-    final provider = ref.read(authProvider);
+    final provider = ref.watch(authProvider);
     return GoRouter(
       routes: provider.routes,
       initialLocation: '/splash',

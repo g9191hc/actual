@@ -8,66 +8,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SplashScreen extends ConsumerStatefulWidget {
+class SplashScreen extends StatelessWidget {
   static String get routeName => 'splash';
 
   const SplashScreen({super.key});
-
-  @override
-  ConsumerState<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends ConsumerState<SplashScreen> {
-
-  @override
-  void initState() {
-    // deleteToken();
-    checkToken();
-    super.initState();
-  }
-
-  checkToken() async {
-    final storage = ref.read(secureStorageProvider);
-    final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-
-    final dio = Dio();
-
-    try{
-      final resp = await dio.post(
-        'http://$ip/auth/token',
-        options: Options(
-          headers: {
-            'authorization': 'Bearer $refreshToken',
-          },
-        ),
-      );
-
-      storage.write(key: ACCESS_TOKEN_KEY, value: resp.data['accessToken']);
-
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => RootTab()),
-            (route) => false,
-      );
-    }
-    catch(e){
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-            (route) => false,
-      );
-    }
-
-    // Navigator.of(context).pushAndRemoveUntil(
-    //   MaterialPageRoute(builder: (_) => RootTab()),
-    //   (route) => false,
-    // );
-  }
-
-  deleteToken() async {
-    final storage = ref.read(secureStorageProvider);
-
-    await storage.deleteAll();
-  }
 
   @override
   Widget build(BuildContext context) {
