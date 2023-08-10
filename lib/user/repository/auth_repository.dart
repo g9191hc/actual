@@ -45,7 +45,7 @@ class AuthRepository {
     final resp = await dio.post(
       '$baseUrl/token',
       options: Options(
-        headers: {REFRESH_TOKEN_KEY: 'true'},
+        headers: {'refreshToken': 'true'},
       ),
     );
     return TokenResponse.fromJson(resp.data);

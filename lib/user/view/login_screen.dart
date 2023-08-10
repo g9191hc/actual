@@ -67,51 +67,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 16.0),
                 // 로그인을 한번 눌러서 요청 중일때는 버튼을 비활성화
                 // onPressed가 null이면 버튼자체가 비활성화 됨
-                ElevatedButton(
-                  onPressed: state is UserModelLoading
-                      ? null
-                      : () async {
+                state is UserModelLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
+                        onPressed: () async {
                           ref.read(userMeProvider.notifier).login(
                                 username: username,
                                 password: password,
                               );
-
-                          // //ID:Password
-                          // final rawString = '$username:$password';
-                          //
-                          // Codec<String, String> stringToBase64 = utf8.fuse(base64);
-                          //
-                          // final token = stringToBase64.encode(rawString);
-                          //
-                          // final resp = await dio.post(
-                          //   'http://$ip/auth/login',
-                          //   options: Options(
-                          //     headers: {
-                          //       'authorization': 'Basic $token',
-                          //     },
-                          //   ),
-                          // );
-                          // print(resp);
-                          //
-                          // final refreshToken = resp.data['refreshToken'];
-                          // final accessToken = resp.data['accessToken'];
-                          //
-                          // //필드가 아닌 빌드되는 함수 내부여서 매번 빌드되믜로, watch가 아닌 read로 가져옴
-                          // final storage = ref.read(secureStorageProvider);
-                          // storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
-                          // storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-                          //
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (_) => RootTab(),
-                          //   ),
-                          // );
                         },
-                  child: Text('로그인'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: PRIMARY_COLOR,
-                  ),
-                ),
+                        child: Text('로그인'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: PRIMARY_COLOR,
+                        ),
+                      ),
                 TextButton(
                   onPressed: () async {},
                   child: Text('회원가입'),
