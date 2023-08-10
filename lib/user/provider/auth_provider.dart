@@ -55,8 +55,11 @@ class AuthProvider extends ChangeNotifier {
   String? redirectLogic(_, GoRouterState state) {
     final UserModelBase? user = ref.read(userMeProvider);
 
+    print('[PATH] ${state.matchedLocation.toString()}');
+
     //현재 화면이 로그인 화면인지 여부 확인
     final logginIn = state.matchedLocation == '/login';
+
 
     //유저 정보가 없는 경우는 로그인이 안 되어 있는 경우로, 무조건 로그인페이지로 보내야 하므로
     if (user == null) {

@@ -7,11 +7,12 @@ import 'package:actual/common/dio/dio.dart';
 import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/common/secure_storage/secure_storage.dart';
 import 'package:actual/common/view/root_tab.dart';
+import 'package:actual/user/model/user_model.dart';
+import 'package:actual/user/provider/user_me_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 
 import '../../common/component/custom_text_form_field.dart';
 
@@ -30,9 +31,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dio = ref.watch(dioProvider);
-
-
+    final state = ref.watch(userMeProvider);
 
     return DefaultLayout(
       title: 'LoginScreen',
@@ -66,48 +65,55 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   obscureText: true,
                 ),
                 const SizedBox(height: 16.0),
+                // 로그인을 한번 눌러서 요청 중일때는 버튼을 비활성화
+                // onPressed가 null이면 버튼자체가 비활성화 됨
                 ElevatedButton(
-                  onPressed: () async {
-                    //ID:Password
-                    final rawString = '$username:$password';
+                  onPressed: state is UserModelLoading
+                      ? null
+                      : () async {
+                          ref.read(userMeProvider.notifier).login(
+                                username: username,
+                                password: password,
+                              );
 
-                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
-
-                    final token = stringToBase64.encode(rawString);
-
-                    final resp = await dio.post(
-                      'http://$ip/auth/login',
-                      options: Options(
-                        headers: {
-                          'authorization': 'Basic $token',
+                          // //ID:Password
+                          // final rawString = '$username:$password';
+                          //
+                          // Codec<String, String> stringToBase64 = utf8.fuse(base64);
+                          //
+                          // final token = stringToBase64.encode(rawString);
+                          //
+                          // final resp = await dio.post(
+                          //   'http://$ip/auth/login',
+                          //   options: Options(
+                          //     headers: {
+                          //       'authorization': 'Basic $token',
+                          //     },
+                          //   ),
+                          // );
+                          // print(resp);
+                          //
+                          // final refreshToken = resp.data['refreshToken'];
+                          // final accessToken = resp.data['accessToken'];
+                          //
+                          // //필드가 아닌 빌드되는 함수 내부여서 매번 빌드되믜로, watch가 아닌 read로 가져옴
+                          // final storage = ref.read(secureStorageProvider);
+                          // storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+                          // storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+                          //
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (_) => RootTab(),
+                          //   ),
+                          // );
                         },
-                      ),
-                    );
-                    print(resp);
-
-                    final refreshToken = resp.data['refreshToken'];
-                    final accessToken = resp.data['accessToken'];
-
-                    //필드가 아닌 빌드되는 함수 내부여서 매번 빌드되믜로, watch가 아닌 read로 가져옴
-                    final storage = ref.read(secureStorageProvider);
-                    storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
-                    storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => RootTab(),
-                      ),
-                    );
-                  },
                   child: Text('로그인'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
                   ),
                 ),
                 TextButton(
-                  onPressed: () async {
-
-                  },
+                  onPressed: () async {},
                   child: Text('회원가입'),
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.black,
