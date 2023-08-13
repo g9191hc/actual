@@ -17,13 +17,15 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider({
     required this.ref,
-  }) {
+  }){
     ref.listen(userMeProvider, (previous, next) {
-      if (previous != next) {
+      if(previous != next){
+        //ChangeNotifier에 정의되어 있는 고유함수
         notifyListeners();
       }
     });
   }
+
 
   List<GoRoute> get routes => [
         GoRoute(
