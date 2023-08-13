@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../restaurant/view/basket_screen.dart';
 import '../model/user_model.dart';
 
 final authProvider =
@@ -51,6 +52,11 @@ class AuthProvider extends ChangeNotifier {
           path: '/login',
           name: LoginScreen.routeName,
           builder: (_, __) => LoginScreen(),
+        ),
+        GoRoute(
+          path: '/basket',
+          name: BasketScreen.routeName,
+          builder: (_, __) => BasketScreen(),
         ),
       ];
 

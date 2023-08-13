@@ -7,10 +7,12 @@ import 'package:actual/restaurant/provider/restaurant_provider.dart';
 import 'package:actual/restaurant/provider/restaurant_rating_provider.dart';
 import 'package:actual/restaurant/repository/restaurant_repository.dart';
 import 'package:actual/restaurant/component/restaurant_card.dart';
+import 'package:actual/restaurant/view/basket_screen.dart';
 import 'package:actual/user/provider/basket_provider.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletons/skeletons.dart';
 import '../../common/model/cursor_pagination_model.dart';
 import '../../rating/component/rating_card.dart';
@@ -75,7 +77,7 @@ class _RestaurantDetailScreenState
     return DefaultLayout(
       floatingActtionButton: FloatingActionButton(
           backgroundColor: PRIMARY_COLOR,
-          onPressed: () {},
+          onPressed: ()=>context.pushNamed(BasketScreen.routeName),
           child: Badge(
             badgeStyle: BadgeStyle(badgeColor: Colors.white),
             showBadge: basket.isNotEmpty,
