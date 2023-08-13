@@ -1,5 +1,8 @@
+import 'package:actual/common/dio/dio.dart';
 import 'package:actual/product/model/product_model.dart';
 import 'package:actual/user/model/basket_item_model.dart';
+import 'package:actual/user/model/patch_basket_body.dart';
+import 'package:actual/user/repository/user_me_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,12 +11,15 @@ import 'package:collection/collection.dart';
 
 final basketProvider =
     StateNotifierProvider<BasketProvider, List<BasketItemModel>>((ref) {
-      return BasketProvider();
-    });
+  final repository = ref.watch(userMeRepositoryProvider);
+  return BasketProvider(repository: repository);
+});
 
 class BasketProvider extends StateNotifier<List<BasketItemModel>> {
+  final UserMeRepository repository;
+
   //state 추가
-  BasketProvider() : super([]);
+  BasketProvider({required this.repository}) : super([]);
 
   //장바구니에 물건을 1개 추가하는 메서드
   //기존에 장바구니에 있었으면 count +=1(만약 있었는데 count가 1 미만이었으면 1로 변경), 없었으면 추가하면서 count = 1
@@ -40,6 +46,9 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
         BasketItemModel(product: product, count: 1),
       ];
     }
+
+    //Optimistic Response
+    await patchBasket();
   }
 
   //장바구니에서 물건을 1개 빼거나 삭제하는 메서드
@@ -64,5 +73,21 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
               e.product.id == product.id ? e.copyWith(count: e.count - 1) : e)
           .toList();
     }
+    await patchBasket();
+  }
+
+  Future<void> patchBasket() async {
+    await repository.patchBasket(
+      body: PatchBasketBody(
+        body: state
+            .map(
+              (e) => PatchBasketBodyBasket(
+                productId: e.product.id,
+                count: e.count,
+              ),
+            )
+            .toList(),
+      ),
+    );
   }
 }
