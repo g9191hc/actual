@@ -64,7 +64,7 @@ class CustomInterceptor extends Interceptor {
         );
 
         //새 액세스토큰
-        final accessToken = resp.data[ACCESS_TOKEN_KEY];
+        final accessToken = resp.data['accessToken'];
 
         //기존 요청을 가져와서 새 액세스토큰을 요청에 덮어쓰기(키가 동일하므로 덮어써짐)
         final options = err.requestOptions;
