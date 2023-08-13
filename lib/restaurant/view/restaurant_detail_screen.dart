@@ -1,3 +1,4 @@
+import 'package:actual/common/const/colors.dart';
 import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/common/utils/pagination_utils.dart';
 import 'package:actual/product/component/product_card.dart';
@@ -73,13 +74,21 @@ class _RestaurantDetailScreenState
 
     return DefaultLayout(
       floatingActtionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Badge(
-          showBadge: basket.isNotEmpty,
-          badgeContent: Text(basket.length.toString()),
-          child: Icon(Icons.shopping_cart),
-        )
-      ),
+          backgroundColor: PRIMARY_COLOR,
+          onPressed: () {},
+          child: Badge(
+            badgeStyle: BadgeStyle(badgeColor: Colors.white),
+            showBadge: basket.isNotEmpty,
+            badgeContent: Text(
+              style: TextStyle(
+                color: PRIMARY_COLOR,
+              ),
+              basket
+                  .fold<int>(0, (previous, current) => previous + current.count)
+                  .toString(),
+            ),
+            child: Icon(Icons.shopping_basket_outlined),
+          )),
       title: state.name,
       child: CustomScrollView(
         controller: controller,
@@ -143,7 +152,7 @@ class _RestaurantDetailScreenState
 
             return InkWell(
               onTap: () {
-                //누르면 장바구니에 추가
+                //누르면 장바구니에 추가(추가되면 basketProvider를 watch하고 있는 모든 위젯이 리빌드됨)
                 ref.read(basketProvider.notifier).addToBasket(
                         product: ProductModel(
                       id: model.id,
