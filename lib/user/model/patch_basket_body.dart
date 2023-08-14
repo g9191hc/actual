@@ -4,8 +4,8 @@ part 'patch_basket_body.g.dart';
 
 @JsonSerializable()
 class PatchBasketBody {
-  final List<PatchBasketBodyBasket> body;
-  PatchBasketBody({required this.body});
+  final List<PatchBasketBodyBasket> basket;
+  PatchBasketBody({required this.basket});
 
   factory PatchBasketBody.fromJson(Map<String, dynamic> json) =>
       _$PatchBasketBodyFromJson(json);

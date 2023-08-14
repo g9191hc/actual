@@ -8,14 +8,14 @@ part of 'patch_basket_body.dart';
 
 PatchBasketBody _$PatchBasketBodyFromJson(Map<String, dynamic> json) =>
     PatchBasketBody(
-      body: (json['body'] as List<dynamic>)
+      basket: (json['basket'] as List<dynamic>)
           .map((e) => PatchBasketBodyBasket.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$PatchBasketBodyToJson(PatchBasketBody instance) =>
     <String, dynamic>{
-      'body': instance.body,
+      'basket': instance.basket,
     };
 
 PatchBasketBodyBasket _$PatchBasketBodyBasketFromJson(

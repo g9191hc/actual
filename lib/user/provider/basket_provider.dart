@@ -79,7 +79,7 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
   Future<void> patchBasket() async {
     await repository.patchBasket(
       body: PatchBasketBody(
-        body: state
+        basket: state
             .map(
               (e) => PatchBasketBodyBasket(
                 productId: e.product.id,
