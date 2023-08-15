@@ -1,5 +1,5 @@
 import 'package:actual/order/model/order_model.dart';
-import 'package:actual/order/repository/post_order_body.dart';
+import 'package:actual/order/model/post_order_body.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/http.dart';
