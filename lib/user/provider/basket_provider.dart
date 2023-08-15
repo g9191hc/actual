@@ -57,7 +57,7 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
   // 1개보다 많았으면 count -= 1
   Future<void> removeFromBasket({
     required ProductModel product,
-    required bool isDelete,
+    bool isDelete = false,
   }) async {
     final exsits =
         state.firstWhereOrNull((e) => e.product.id == product.id) != null;

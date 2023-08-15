@@ -74,47 +74,51 @@ class ProductCard extends ConsumerWidget {
     final basket = ref.watch(basketProvider);
 
     return IntrinsicHeight(
-      child: Row(
+      child: Column(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: image,
-          ),
-          const SizedBox(
-            width: 16.0,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: image,
+              ),
+              const SizedBox(
+                width: 16.0,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      detail,
+                      style: TextStyle(
+                        color: BODY_TEXT_COLOR,
+                        fontSize: 14.0,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      '₩$price',
+                      style: TextStyle(
+                        color: PRIMARY_COLOR,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
                 ),
-                Text(
-                  detail,
-                  style: TextStyle(
-                    color: BODY_TEXT_COLOR,
-                    fontSize: 14.0,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  '₩$price',
-                  style: TextStyle(
-                    color: PRIMARY_COLOR,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.right,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           if (onSubtract != null && onAdd != null)
             _Footer(
@@ -150,35 +154,38 @@ class _Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Row(
         children: [
+          Expanded(
+            child: Text(
+              '총액 ₩$total',
+              style: TextStyle(
+                color: PRIMARY_COLOR,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  '총액 ₩$total',
-                  style: TextStyle(
-                    color: PRIMARY_COLOR,
-                    fontWeight: FontWeight.w500,
-                  ),
+              renderButton(icon: Icons.remove, onTap: onSubtract),
+              const SizedBox(
+                width: 8.0,
+              ),
+              Text(
+                count.toString(),
+                style: TextStyle(
+                  color: PRIMARY_COLOR,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              Row(
-                children: [
-                  renderButton(icon: Icons.remove, onTap: onAdd),
-                  Text(
-                    count.toString(),
-                    style: TextStyle(
-                      color: PRIMARY_COLOR,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  renderButton(icon: Icons.add, onTap: onSubtract),
-                ],
-              )
+              const SizedBox(
+                width: 8.0,
+              ),
+              renderButton(icon: Icons.add, onTap: onAdd),
             ],
-          ),
+          )
         ],
       ),
     );

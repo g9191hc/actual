@@ -17,6 +17,7 @@ import 'package:skeletons/skeletons.dart';
 import '../../common/model/cursor_pagination_model.dart';
 import '../../rating/component/rating_card.dart';
 import '../../rating/model/rating_model.dart';
+import '../../user/model/basket_item_model.dart';
 import '../model/restaurant_detail_model.dart';
 import '../model/restaurant_model.dart';
 
@@ -67,7 +68,7 @@ class _RestaurantDetailScreenState
     final basket = ref.watch(basketProvider);
 
     if (state == null) {
-      return DefaultLayout(
+      return const DefaultLayout(
         child: Center(
           child: CircularProgressIndicator(),
         ),
@@ -75,22 +76,7 @@ class _RestaurantDetailScreenState
     }
 
     return DefaultLayout(
-      floatingActtionButton: FloatingActionButton(
-          backgroundColor: PRIMARY_COLOR,
-          onPressed: ()=>context.pushNamed(BasketScreen.routeName),
-          child: Badge(
-            badgeStyle: BadgeStyle(badgeColor: Colors.white),
-            showBadge: basket.isNotEmpty,
-            badgeContent: Text(
-              style: TextStyle(
-                color: PRIMARY_COLOR,
-              ),
-              basket
-                  .fold<int>(0, (previous, current) => previous + current.count)
-                  .toString(),
-            ),
-            child: Icon(Icons.shopping_basket_outlined),
-          )),
+      floatingActtionButton: _FloatingActionButton(basket: basket,),
       title: state.name,
       child: CustomScrollView(
         controller: controller,
@@ -214,5 +200,31 @@ class _RestaurantDetailScreenState
         ),
       ),
     );
+  }
+}
+
+class _FloatingActionButton extends StatelessWidget {
+  final List<BasketItemModel> basket;
+
+  const _FloatingActionButton({super.key, required this.basket});
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+        backgroundColor: PRIMARY_COLOR,
+        onPressed: ()=>context.pushNamed(BasketScreen.routeName),
+        child: Badge(
+          badgeStyle: BadgeStyle(badgeColor: Colors.white),
+          showBadge: basket.isNotEmpty,
+          badgeContent: Text(
+            style: TextStyle(
+              color: PRIMARY_COLOR,
+            ),
+            basket
+                .fold<int>(0, (previous, current) => previous + current.count)
+                .toString(),
+          ),
+          child: Icon(Icons.shopping_basket_outlined),
+        ));
   }
 }
