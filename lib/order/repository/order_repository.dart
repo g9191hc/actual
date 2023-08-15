@@ -18,7 +18,7 @@ final orderRepositoryProvider = Provider<OrderRepository>((ref) {
 abstract class OrderRepository {
   factory OrderRepository(Dio dio, {String? baseUrl}) = _OrderRepository;
 
-  @GET('/')
+  @POST('/')
   @Headers({'accessToken': 'true'})
   Future<OrderModel> postOrder({
     @Body() required PostOrderBody body,

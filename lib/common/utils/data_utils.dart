@@ -18,6 +18,8 @@ class DataUtils{
   }
 
   static DateTime stringToDateTime(String value){
+    print('value : $value');
+    print(DateTime.parse(value));
     return DateTime.parse(value);
   }
 }

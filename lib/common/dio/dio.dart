@@ -40,8 +40,8 @@ class CustomInterceptor extends Interceptor {
 
 // 요청에 실패 했을 때(액세스 토큰 만료시 등) : onError+Tab(자동완성)
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
-    print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
+  void onError(DioError err, ErrorInterceptorHandler handler) async {
+    print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri} ${err.message}');
     final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
     //handler.reject() 실행시 요청실패 처리됨
     if (refreshToken == null) return handler.reject(err);
@@ -84,7 +84,7 @@ class CustomInterceptor extends Interceptor {
         handler.resolve(response);
 
         //새 액세스토큰을 받는 과정에서 문제가 발생하면, 더 이상 할수 있는 것이 없으므로 요청실패 처리(=로그아웃)
-      } on DioException catch (e) {
+      } on DioError catch (e) {
         //로그아웃(함수사용을 위해 1회만 호출할 거라서 read 사용)
         ref.read(authProvider.notifier).logout();
         //요청실패처리

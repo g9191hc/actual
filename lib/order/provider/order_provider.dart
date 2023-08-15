@@ -30,16 +30,17 @@ class OrderStateNotifier extends StateNotifier<List<OrderModel>> {
           .toList();
       final totalPrice = state.fold(0, (p, c) => p + c.count * c.product.price);
 
-      final resp = await repository.postOrder(
+      await repository.postOrder(
         body: PostOrderBody(
           id: id,
           products: products,
           totalPrice: totalPrice,
-          createdAt: DateTime.now.toString(),
+          createdAt: DateTime.now().toString(),
         ),
       );
       return true;
     } on Exception catch (e) {
+      print('[ERR] $e');
       return false;
     }
   }
