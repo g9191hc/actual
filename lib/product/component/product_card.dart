@@ -107,7 +107,7 @@ class ProductCard extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      '₩$price',
+                      '₩ $price',
                       style: TextStyle(
                         color: PRIMARY_COLOR,
                         fontSize: 12.0,
@@ -160,7 +160,7 @@ class _Footer extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              '총액 ₩$total',
+              '총액 ₩ $total',
               style: TextStyle(
                 color: PRIMARY_COLOR,
                 fontWeight: FontWeight.w500,

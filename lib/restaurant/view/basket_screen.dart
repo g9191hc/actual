@@ -6,6 +6,7 @@ import 'package:actual/user/provider/basket_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class BasketScreen extends ConsumerWidget {
   static String get routeName => 'basket';
@@ -18,8 +19,30 @@ class BasketScreen extends ConsumerWidget {
 
     if (basket.isEmpty) {
       return DefaultLayout(
-        child: Center(
-          child: Text('장바구니가 텅~'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                '장바구니가 텅~',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.pop();
+                },
+                child: Text('돌아가기'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: PRIMARY_COLOR,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
