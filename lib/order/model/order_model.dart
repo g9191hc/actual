@@ -51,7 +51,7 @@ class OrderModel {
   final String id;
   final RestaurantModel restaurant;
   final int totalPrice;
-  final OrderProductAndCountModel products;
+  final List<OrderProductAndCountModel> products;
   @JsonKey(fromJson: DataUtils.stringToDateTime)
   final DateTime createdAt;
 

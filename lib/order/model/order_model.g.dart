@@ -44,8 +44,10 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) => OrderModel(
       restaurant:
           RestaurantModel.fromJson(json['restaurant'] as Map<String, dynamic>),
       totalPrice: json['totalPrice'] as int,
-      products: OrderProductAndCountModel.fromJson(
-          json['products'] as Map<String, dynamic>),
+      products: (json['products'] as List<dynamic>)
+          .map((e) =>
+              OrderProductAndCountModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
       createdAt: DataUtils.stringToDateTime(json['createdAt'] as String),
     );
 
