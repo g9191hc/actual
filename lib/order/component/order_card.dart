@@ -42,9 +42,11 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
             '${orderDate.year}.${orderDate.month.toString().padLeft(2, '0')}.${orderDate.day.toString().padLeft(2, '0')} 주문완료'),
+        const SizedBox(height: 8.0,),
         Row(
           children: [
             ClipRRect(
@@ -54,22 +56,28 @@ class OrderCard extends StatelessWidget {
             const SizedBox(
               width: 16.0,
             ),
-            Column(
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 14.0,
-                  ),
+            IntrinsicWidth(
+              child: Container(
+                decoration: BoxDecoration(color: Colors.red),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    Text(
+                      '$productsDetail $price원',
+                      style: TextStyle(
+                        color: BODY_TEXT_COLOR,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  '$productsDetail $price원',
-                  style: TextStyle(
-                    color: BODY_TEXT_COLOR,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
+              ),
             )
           ],
         )
