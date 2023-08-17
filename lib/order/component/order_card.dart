@@ -57,26 +57,23 @@ class OrderCard extends StatelessWidget {
               width: 16.0,
             ),
             IntrinsicWidth(
-              child: Container(
-                decoration: BoxDecoration(color: Colors.red),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 14.0,
                     ),
-                    Text(
-                      '$productsDetail $price원',
-                      style: TextStyle(
-                        color: BODY_TEXT_COLOR,
-                        fontWeight: FontWeight.w300,
-                      ),
+                  ),
+                  Text(
+                    '$productsDetail $price원',
+                    style: TextStyle(
+                      color: BODY_TEXT_COLOR,
+                      fontWeight: FontWeight.w300,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             )
           ],

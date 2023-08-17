@@ -1,40 +1,75 @@
 import 'package:actual/common/model/model_with_id.dart';
 import 'package:actual/common/repository/base_pagination_repository.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/cursor_pagination_model.dart';
 import '../model/pagination_params.dart';
 
-class PaginationProvider<
-        T extends IModelWithId,
-        U extends IBasePaginationRepository<T>
-    >
+class _PaginationInfo {
+  final int fetchCount;
+  final bool fetchMore;
+  final bool forceRefetch;
+
+  _PaginationInfo({
+    //한번에 가져올 요소 갯수
+    this.fetchCount = 20,
+    //true : CursorPaginationFetchingMore(추가데이터 요청)
+    //false : CursorPaginationRefetching(새로고침(현재상태 덮어씌움))
+    this.fetchMore = false,
+    //true : CursorPaginationLoading(초기화)
+    this.forceRefetch = false,
+  });
+}
+
+class PaginationProvider<T extends IModelWithId,
+        U extends IBasePaginationRepository<T>>
     extends StateNotifier<CursorPaginationBase> {
   final U repository;
+  final paginationThrottle = Throttle(
+    const Duration(seconds: 3),
+    initialValue: _PaginationInfo(),
+    checkEquality: false,
+  );
 
   PaginationProvider({
     required this.repository,
   }) : super(CursorPaginationLoading()) {
     paginate();
+    paginationThrottle.values.listen((state) {
+      _throttledPagination(state);
+    });
   }
 
   Future<void> paginate({
     //한번에 가져올 요소 갯수
     int fetchCount = 20,
-
     //true : CursorPaginationFetchingMore(추가데이터 요청)
     //false : CursorPaginationRefetching(새로고침(현재상태 덮어씌움))
-    fetchMore = false,
-
+    bool fetchMore = false,
     //true : CursorPaginationLoading(초기화)
     bool forceRefetch = false,
   }) async {
+    //1개의 값만 전달이 가능하므로, 값이 여러개 일 경우 클래스를 만들어 그 인스턴스를 전달
+    paginationThrottle.setValue(
+      _PaginationInfo(
+          fetchMore: fetchMore,
+          fetchCount: fetchCount,
+          forceRefetch: forceRefetch),
+    );
+  }
+
+  Future<void> _throttledPagination(_PaginationInfo info) async {
     //5가지 상태
     // 1) CursorPagination - 정상데이터가 있는상태
     // 2) CursorPaginationLoading - 최초데이터 요청하여 로딩중 상태(현재 캐시 없음)
     // 3) CursorPaginationError - 에러가 있는 상태
     // 4) CursorPaginationRefetching - 첫페이지부터 다시 요청하여 로딩중 상태(현재 캐시 있음)
     // 5) CursorPaginationFetchingMore - 추가데이터를 요청하여 로딩중 상태(현재 캐시 있음)
+
+    final fetchCount = info.fetchCount;
+    final fetchMore = info.fetchMore;
+    final forceRefetch = info.forceRefetch;
 
     try {
       // 1. 데이터 요청을 거부해야 하는 경우
@@ -112,7 +147,7 @@ class PaginationProvider<
         state = resp;
       }
     } catch (e, stack) {
-      print (e);
+      print(e);
       print(stack);
       state = CursorPaginationError(errMessage: '데이터를 가져오지 못 했습니다.');
     }
